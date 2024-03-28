@@ -1,6 +1,8 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 
-let token = null;
+let access_token = null;
+let refresh_token = null;
+let expires_in = null;
 
 window.discord_sdk_is_ready = function() {
   return window.discord_sdk_ready;
@@ -28,6 +30,11 @@ window.discord_sdk_get_instance_id = function() {
   if (sdk()) return sdk().instanceId;
 }
 
+window.discord_sdk_get_frame_id = function() {
+  const p = new URLSearchParams(window.location.href);
+  return p.get('frame_id');
+}
+
 window.discord_sdk_get_platform = function() {
   if (sdk()) return sdk().platform;
 }
@@ -53,14 +60,19 @@ window.discord_sdk_commands_authorize = async function(backend_url,scopes=['iden
     }),
   });
 
-  const { access_token } = await result.json();
-  token = access_token; // store for later use
+  const json = await result.json();
+  access_token = json.access_token;
+  refresh_token = json.refresh_token;
+  expires_in = json.expires_in;
+
+  //token = access_token; // store for later use
+  //refresh = refresh_token;
 
   const auth = await sdk().commands.authenticate({ access_token });
   if (auth == null) {
     console.log('Authentication failed')
   }
-  window.gml_Script_gmcallback_discord_sdk_callback(null,null,`DISCORD_AUTHORIZE_SUCCESS`,JSON.stringify(auth));
+  window.gml_Script_gmcallback_discord_sdk_callback(null,null,`DISCORD_AUTHORIZE_SUCCESS`,JSON.stringify(json));
 }
 
 const discord_sdk_commands = {
