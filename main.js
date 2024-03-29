@@ -3,6 +3,7 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 let access_token = null;
 let refresh_token = null;
 let expires_in = null;
+let expires_at = null;
 
 window.discord_sdk_is_ready = function() {
   return window.discord_sdk_ready;
@@ -64,6 +65,7 @@ window.discord_sdk_commands_authorize = async function(backend_url,scopes=['iden
   access_token = json.access_token;
   refresh_token = json.refresh_token;
   expires_in = json.expires_in;
+  expires_at = Date.now() + (expires_in*1000);
 
   //token = access_token; // store for later use
   //refresh = refresh_token;
@@ -196,7 +198,7 @@ window.discord_sdk_upload_share_surface = function(request_id, surface_data,widt
     const response = await fetch(`https://discord.com/api/applications/${sdk().clientId}/attachment`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${access_token}`,
       },
       body
     });
