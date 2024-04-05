@@ -1,7 +1,7 @@
 # activity.gml.html
 
 
-You probably don't need this repository. It's a companion to my activities library for Discord, which you can find [over here](https://github.com/Sidorakh/activity.gml)
+You definitely don't need this repository. It was a companion to my activities library for Discord before it used webpack, which you can find [over here](https://github.com/Sidorakh/activity.gml)
 
 
 ## Building
